@@ -1,0 +1,123 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Personalized Horoscope API",
+      "version": "1.0.0",
+      "description": "API to serve personalized daily horoscopes based on zodiac sign"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "paths": {
+      "/auth/signup": {
+        "post": {
+          "summary": "User Signup",
+          "description": "Sign up a new user and auto-calculate zodiac sign",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "email": { "type": "string" },
+                    "password": { "type": "string" },
+                    "birthdate": { "type": "string", "format": "date" }
+                  },
+                  "required": ["name", "email", "password", "birthdate"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User registered successfully"
+            },
+            "400": {
+              "description": "User already exists"
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "summary": "User Login",
+          "description": "Login with email and password to receive a JWT token",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string" },
+                    "password": { "type": "string" }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login successful and token returned"
+            },
+            "401": {
+              "description": "Invalid credentials"
+            }
+          }
+        }
+      },
+      "/horoscope/today": {
+        "get": {
+          "summary": "Get Today's Horoscope",
+          "description": "Get today’s horoscope for the user’s zodiac sign",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Today's horoscope returned"
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          }
+        }
+      },
+      "/horoscope/history": {
+        "get": {
+          "summary": "Get Horoscope History",
+          "description": "Returns the last 7 days’ horoscopes served to the user",
+          "security": [
+            {
+              "bearerAuth": []
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Horoscope history returned"
+            },
+            "401": {
+              "description": "Unauthorized"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }
+  
